@@ -1,74 +1,181 @@
-module tb_instruction_memory;
+module tb_instruction_decoder;
 
-    logic [31:0] address;
     logic [31:0] instruction;
 
-    instruction_memory dut (
-        .address(address),
-        .instruction(instruction)
+    logic [6:0] opcode;
+    logic [4:0] rd;
+    logic [2:0] funct3;
+    logic [4:0] rs1;
+    logic [4:0] rs2;
+    logic [6:0] funct7;
+
+    logic [2:0] alu_control;
+    logic [31:0] immediate;
+
+
+    // ==========================================
+    // DUT
+    // ==========================================
+
+    instruction_decoder dut (
+        .instruction(instruction),
+        .opcode(opcode),
+        .rd(rd),
+        .funct3(funct3),
+        .rs1(rs1),
+        .rs2(rs2),
+        .funct7(funct7),
+        .alu_control(alu_control),
+        .immediate(immediate)
     );
+
+
+    // ==========================================
+    // TESTS
+    // ==========================================
 
     initial begin
 
-        // -----------------------------------------
-        // Test 1: Address 0
-        // -----------------------------------------
+        // ======================================
+        // R-TYPE TESTS
+        // ======================================
 
-        address = 32'd0;
+        // ADD x3, x1, x2
+        instruction = 32'h002081B3;
+        #1;
 
-        #2;
-
-        if (instruction == 32'h00500093)
-            $display("INSTRUCTION 0 PASS");
+        if (alu_control == 3'b000)
+            $display("ADD DECODE PASS");
         else
-            $display("INSTRUCTION 0 FAIL: Got %h", instruction);
+            $display("ADD DECODE FAIL");
 
-        // -----------------------------------------
-        // Test 2: Address 4
-        // -----------------------------------------
 
-        address = 32'd4;
+        // SUB x3, x1, x2
+        instruction = 32'h402081B3;
+        #1;
 
-        #2;
-
-        if (instruction == 32'h00A00113)
-            $display("INSTRUCTION 4 PASS");
+        if (alu_control == 3'b001)
+            $display("SUB DECODE PASS");
         else
-            $display("INSTRUCTION 4 FAIL: Got %h", instruction);
+            $display("SUB DECODE FAIL");
 
-        // -----------------------------------------
-        // Test 3: Address 8
-        // -----------------------------------------
 
-        address = 32'd8;
+        // AND x3, x1, x2
+        instruction = 32'h0020F1B3;
+        #1;
 
-        #2;
-
-        if (instruction == 32'h002081B3)
-            $display("INSTRUCTION 8 PASS");
+        if (alu_control == 3'b010)
+            $display("AND DECODE PASS");
         else
-            $display("INSTRUCTION 8 FAIL: Got %h", instruction);
+            $display("AND DECODE FAIL");
 
-        // -----------------------------------------
-        // Test 4: Address 12
-        // -----------------------------------------
 
-        address = 32'd12;
+        // OR x3, x1, x2
+        instruction = 32'h0020E1B3;
+        #1;
 
-        #2;
-
-        if (instruction == 32'h00310023)
-            $display("INSTRUCTION 12 PASS");
+        if (alu_control == 3'b011)
+            $display("OR DECODE PASS");
         else
-            $display("INSTRUCTION 12 FAIL: Got %h", instruction);
+            $display("OR DECODE FAIL");
 
-        // -----------------------------------------
-        // Test completed
-        // -----------------------------------------
+
+        // XOR x3, x1, x2
+        instruction = 32'h0020C1B3;
+        #1;
+
+        if (alu_control == 3'b100)
+            $display("XOR DECODE PASS");
+        else
+            $display("XOR DECODE FAIL");
+
+
+        // ======================================
+        // I-TYPE TESTS
+        // ======================================
+
+        // ADDI x5, x1, 10
+        instruction = 32'h00A08293;
+        #1;
+
+        if (alu_control == 3'b000 &&
+            immediate == 32'd10)
+            $display("ADDI DECODE PASS");
+        else
+            $display("ADDI DECODE FAIL");
+
+
+        // ANDI x5, x1, 15
+        instruction = 32'h00F0F293;
+        #1;
+
+        if (alu_control == 3'b010 &&
+            immediate == 32'd15)
+            $display("ANDI DECODE PASS");
+        else
+            $display("ANDI DECODE FAIL");
+
+
+        // ORI x5, x1, 15
+        instruction = 32'h00F0E293;
+        #1;
+
+        if (alu_control == 3'b011 &&
+            immediate == 32'd15)
+            $display("ORI DECODE PASS");
+        else
+            $display("ORI DECODE FAIL");
+
+
+        // XORI x5, x1, 15
+        instruction = 32'h00F0C293;
+        #1;
+
+        if (alu_control == 3'b100 &&
+            immediate == 32'd15)
+            $display("XORI DECODE PASS");
+        else
+            $display("XORI DECODE FAIL");
+
+
+        // ======================================
+        // SIGN EXTENSION TEST
+        // ======================================
+
+        // ADDI x5, x1, -1
+        instruction = 32'hFFF08293;
+        #1;
+
+        if (immediate == 32'hFFFFFFFF)
+            $display("SIGN EXTENSION PASS");
+        else
+            $display("SIGN EXTENSION FAIL");
+
+
+        // ======================================
+        // S-TYPE TEST
+        // ======================================
+
+        // SW x3, 8(x1)
+        instruction = 32'h0030A423;
+        #1;
+
+        if (opcode == 7'b0100011 &&
+            rs1 == 5'd1 &&
+            rs2 == 5'd3 &&
+            immediate == 32'd8)
+            $display("SW DECODE PASS");
+        else
+            $display("SW DECODE FAIL");
+
+
+        // ======================================
+        // TEST COMPLETE
+        // ======================================
 
         $display("");
         $display("================================");
-        $display("INSTRUCTION MEMORY TESTS COMPLETED");
+        $display("INSTRUCTION DECODER TESTS COMPLETED");
         $display("================================");
 
         $finish;
