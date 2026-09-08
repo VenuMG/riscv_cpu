@@ -8,17 +8,29 @@ module alu (
 );
 
     always_comb begin
+
         case (alu_control)
 
-            3'b000: result = a + b;  // ADD
-            3'b001: result = a - b;  // SUB
-            3'b010: result = a & b;  // AND
-            3'b011: result = a | b;  // OR
-            3'b100: result = a ^ b;  // XOR
+            3'b000:
+                result = a + b;       // ADD
 
-            default: result = 32'b0;
+            3'b001:
+                result = a - b;       // SUB
+
+            3'b010:
+                result = a & b;       // AND
+
+            3'b011:
+                result = a | b;       // OR
+
+            3'b100:
+                result = a ^ b;       // XOR
+
+            default:
+                result = 32'b0;
 
         endcase
+
     end
 
     assign zero = (result == 32'b0);

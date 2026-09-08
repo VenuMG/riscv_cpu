@@ -202,7 +202,14 @@ module tb_alu_control;
             $display("BEQ SUBTRACT CONTROL PASS");
         else
             $display("BEQ SUBTRACT CONTROL FAIL");
+        else if (opcode == 7'b1101111) begin
 
+        // JAL does not need the ALU for its final result.
+         // Default ADD is sufficient.
+
+        alu_control = 3'b000;
+
+        end
 
         // ======================================
         // TEST COMPLETE

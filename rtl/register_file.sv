@@ -1,4 +1,5 @@
 module register_file (
+
     input  logic        clk,
     input  logic        reset,
 
@@ -11,14 +12,18 @@ module register_file (
 
     output logic [31:0] read_data1,
     output logic [31:0] read_data2
+
 );
 
-    // 32 registers, each 32 bits wide
     logic [31:0] registers [0:31];
 
     integer i;
 
-    // Sequential logic: reset and register write
+
+    // =========================================================
+    // WRITE PORT
+    // =========================================================
+
     always_ff @(posedge clk) begin
 
         if (reset) begin
@@ -36,13 +41,18 @@ module register_file (
 
     end
 
-    // Combinational read ports
+
+    // =========================================================
+    // READ PORTS
+    // =========================================================
+
     always_comb begin
 
         if (rs1 == 5'b00000)
             read_data1 = 32'b0;
         else
             read_data1 = registers[rs1];
+
 
         if (rs2 == 5'b00000)
             read_data2 = 32'b0;

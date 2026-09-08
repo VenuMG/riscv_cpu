@@ -10,16 +10,16 @@ module alu_control (
 
     always_comb begin
 
-        // ==========================================
+        // =====================================================
         // DEFAULT
-        // ==========================================
+        // =====================================================
 
         alu_control = 3'b000;
 
 
-        // ==========================================
+        // =====================================================
         // R-TYPE
-        // ==========================================
+        // =====================================================
 
         if (opcode == 7'b0110011) begin
 
@@ -29,29 +29,41 @@ module alu_control (
                 3'b000: begin
 
                     if (funct7 == 7'b0100000)
-                        alu_control = 3'b001;   // SUB
+                        alu_control = 3'b001;
                     else
-                        alu_control = 3'b000;   // ADD
+                        alu_control = 3'b000;
 
                 end
+
 
                 // AND
                 3'b111: begin
+
                     alu_control = 3'b010;
+
                 end
+
 
                 // OR
                 3'b110: begin
+
                     alu_control = 3'b011;
+
                 end
+
 
                 // XOR
                 3'b100: begin
+
                     alu_control = 3'b100;
+
                 end
 
+
                 default: begin
+
                     alu_control = 3'b000;
+
                 end
 
             endcase
@@ -59,9 +71,9 @@ module alu_control (
         end
 
 
-        // ==========================================
-        // I-TYPE ALU
-        // ==========================================
+        // =====================================================
+        // I-TYPE
+        // =====================================================
 
         else if (opcode == 7'b0010011) begin
 
@@ -69,26 +81,40 @@ module alu_control (
 
                 // ADDI
                 3'b000: begin
+
                     alu_control = 3'b000;
+
                 end
+
 
                 // ANDI
                 3'b111: begin
+
                     alu_control = 3'b010;
+
                 end
+
 
                 // ORI
                 3'b110: begin
+
                     alu_control = 3'b011;
+
                 end
+
 
                 // XORI
                 3'b100: begin
+
                     alu_control = 3'b100;
+
                 end
 
+
                 default: begin
+
                     alu_control = 3'b000;
+
                 end
 
             endcase
@@ -96,31 +122,42 @@ module alu_control (
         end
 
 
-        // ==========================================
+        // =====================================================
         // LOAD / STORE
-        // ==========================================
+        // =====================================================
 
-        else if (opcode == 7'b0000011 ||
-                 opcode == 7'b0100011) begin
+        else if (
+            opcode == 7'b0000011 ||
+            opcode == 7'b0100011
+        ) begin
 
-            // Address calculation:
-            // base register + immediate
+            // Address = base + immediate
 
             alu_control = 3'b000;
 
         end
 
 
-        // ==========================================
-        // BRANCH
-        // ==========================================
+        // =====================================================
+        // BEQ
+        // =====================================================
 
         else if (opcode == 7'b1100011) begin
 
-            // BEQ requires subtraction:
-            // rs1 - rs2 = 0 → branch taken
+            // Compare using subtraction
 
             alu_control = 3'b001;
+
+        end
+
+
+        // =====================================================
+        // JAL
+        // =====================================================
+
+        else if (opcode == 7'b1101111) begin
+
+            alu_control = 3'b000;
 
         end
 

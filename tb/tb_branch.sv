@@ -1,11 +1,10 @@
-module tb_cpu;
+module tb_branch;
 
     logic clk;
     logic reset;
 
     logic [31:0] pc_out;
     logic [31:0] instruction_out;
-    
 
 
     // =========================================================
@@ -44,58 +43,61 @@ module tb_cpu;
 
         reset = 1'b1;
 
-        // Hold reset for one clock cycle
+        // Reset CPU
         #12;
 
         reset = 1'b0;
 
 
-        // -----------------------------------------------------
-        // Execute instructions
-        // -----------------------------------------------------
+        // =====================================================
+        // MONITOR EXECUTION
+        // =====================================================
 
-        repeat (10) begin
+        repeat (8) begin
 
             @(posedge clk);
 
             #1;
 
             $display(
-                "PC = %0d | Instruction = %h",
+                "PC = %0d | Instruction = %h | x1 = %0d | x2 = %0d | x3 = %0d",
                 pc_out,
-                instruction_out
+                instruction_out,
+                dut.registers.registers[1],
+                dut.registers.registers[2],
+                dut.registers.registers[3]
             );
 
         end
 
 
-        // -----------------------------------------------------
-        // CHECK RESULTS
-        // -----------------------------------------------------
+        // =====================================================
+        // RESULTS
+        // =====================================================
 
         $display("");
         $display("================================");
-        $display("REGISTER RESULTS");
+        $display("BRANCH TEST RESULTS");
         $display("================================");
 
         $display("x1 = %0d", dut.registers.registers[1]);
         $display("x2 = %0d", dut.registers.registers[2]);
         $display("x3 = %0d", dut.registers.registers[3]);
-        $display("x4 = %0d", dut.registers.registers[4]);
-        $display("x5 = %0d", dut.registers.registers[5]);
-        $display("x6 = %0d", dut.registers.registers[6]);
-        $display("x7 = %0d", dut.registers.registers[7]);
 
 
-        // -----------------------------------------------------
-        // AUTOMATIC CHECKS
-        // -----------------------------------------------------
+        // =====================================================
+        // CHECK x1
+        // =====================================================
 
-        if (dut.registers.registers[1] == 32'd5)
+        if (dut.registers.registers[1] == 32'd10)
             $display("x1 PASS");
         else
             $display("x1 FAIL");
 
+
+        // =====================================================
+        // CHECK x2
+        // =====================================================
 
         if (dut.registers.registers[2] == 32'd10)
             $display("x2 PASS");
@@ -103,39 +105,23 @@ module tb_cpu;
             $display("x2 FAIL");
 
 
-        if (dut.registers.registers[3] == 32'd15)
-            $display("x3 PASS");
+        // =====================================================
+        // CHECK BRANCH
+        // =====================================================
+
+        // If branch worked correctly,
+        // instruction at PC=12 was skipped,
+        // therefore x3 must be 20 instead of 100.
+
+        if (dut.registers.registers[3] == 32'd20)
+            $display("BEQ BRANCH TAKEN PASS");
         else
-            $display("x3 FAIL");
-
-
-        if (dut.registers.registers[4] == 32'd5)
-            $display("x4 PASS");
-        else
-            $display("x4 FAIL");
-
-
-        if (dut.registers.registers[5] == 32'd0)
-            $display("x5 PASS");
-        else
-            $display("x5 FAIL");
-
-
-        if (dut.registers.registers[6] == 32'd15)
-            $display("x6 PASS");
-        else
-            $display("x6 FAIL");
-
-
-        if (dut.registers.registers[7] == 32'd15)
-            $display("x7 PASS");
-        else
-            $display("x7 FAIL");
+            $display("BEQ BRANCH TAKEN FAIL");
 
 
         $display("");
         $display("================================");
-        $display("CPU DATAPATH TEST COMPLETED");
+        $display("BEQ TEST COMPLETED");
         $display("================================");
 
         $finish;
