@@ -1,27 +1,49 @@
 module instruction_memory (
-    input  logic [31:0] address,
+
+    input logic [31:0] address,
 
     output logic [31:0] instruction
+
 );
 
     logic [31:0] memory [0:63];
 
+
     initial begin
 
+        // ADDI x1, x0, 5
         memory[0] = 32'h00500093;
-        memory[1] = 32'h00A00113;
-        memory[2] = 32'h002081B3;
-        memory[3] = 32'h00310023;
 
-        memory[4] = 32'h00000013;
-        memory[5] = 32'h00000013;
-        memory[6] = 32'h00000013;
+        // ADDI x2, x0, 10
+        memory[1] = 32'h00A00113;
+
+        // ADD x3, x1, x2
+        memory[2] = 32'h002081B3;
+
+        // SUB x4, x2, x1
+        memory[3] = 32'h40110233;
+
+        // AND x5, x1, x2
+        memory[4] = 32'h0020F2B3;
+
+        // OR x6, x1, x2
+        memory[5] = 32'h0020E333;
+
+        // XOR x7, x1, x2
+        memory[6] = 32'h0020C3B3;
+
+        // NOP
         memory[7] = 32'h00000013;
+        memory[8] = 32'h00000013;
+        memory[9] = 32'h00000013;
 
     end
 
+
     always_comb begin
+
         instruction = memory[address[7:2]];
+
     end
 
 endmodule
