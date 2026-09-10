@@ -7,9 +7,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 
 
 def run_test(number, name, script):
-
     print()
-    print(f"[{number}/6] {name}")
+    print(f"[{number}/7] {name}")
     print("-" * 50)
 
     command = [
@@ -28,7 +27,6 @@ def run_test(number, name, script):
         print(result.stdout)
 
     if result.returncode != 0:
-
         if result.stderr:
             print(result.stderr)
 
@@ -39,8 +37,54 @@ def run_test(number, name, script):
     return True
 
 
-def main():
+def run_random_differential(number):
+    print()
+    print(f"[{number}/7] Random Differential")
+    print("-" * 50)
 
+    compare_script = PROJECT_ROOT / "model" / "compare_random.py"
+    rtl_output = PROJECT_ROOT / "random_rtl_output.txt"
+    expected_output = PROJECT_ROOT / "random_expected.txt"
+
+    if not expected_output.exists():
+        print("random_expected.txt not found")
+        print("Run: python model/random_differential.py")
+        print("Random Differential : FAIL")
+        return False
+
+    if not rtl_output.exists():
+        print("random_rtl_output.txt not found")
+        print("Run the Verilator randomized simulation first.")
+        print("Random Differential : FAIL")
+        return False
+
+    command = [
+        sys.executable,
+        str(compare_script)
+    ]
+
+    result = subprocess.run(
+        command,
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True
+    )
+
+    if result.stdout:
+        print(result.stdout)
+
+    if result.returncode != 0:
+        if result.stderr:
+            print(result.stderr)
+
+        print("Random Differential : FAIL")
+        return False
+
+    print("Random Differential : PASS")
+    return True
+
+
+def main():
     print("==========================================")
     print("RISC-V CPU AUTOMATED REGRESSION")
     print("==========================================")
@@ -57,11 +101,13 @@ def main():
     passed = 0
 
     for number, (name, script) in enumerate(tests, start=1):
-
         if run_test(number, name, script):
             passed += 1
 
-    total = len(tests)
+    if run_random_differential(7):
+        passed += 1
+
+    total = 7
 
     print()
     print("------------------------------------------")

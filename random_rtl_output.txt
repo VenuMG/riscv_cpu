@@ -1,0 +1,41 @@
+==========================================
+RANDOM RTL VERIFICATION
+==========================================
+FINAL_PC 400
+REGISTERS
+x1 4294966715
+x2 4294967277
+x3 0
+x4 0
+x5 1982
+x6 4294965958
+x7 0
+x8 0
+x9 511
+x10 1135
+x11 0
+x12 1071
+x13 0
+x14 4294967208
+x15 0
+x16 246
+x17 4294965523
+x18 4294965991
+x19 4294967277
+x20 4294966771
+x21 1982
+x22 0
+x23 4294967295
+x24 0
+x25 0
+x26 740
+x27 0
+x28 437
+x29 176
+x30 0
+x31 679
+==========================================
+- tb\tb_random.sv:76: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.050 2026-07-01
+- Verilator: $finish at 1ns; walltime 0.000 s; speed 0.000 s/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 5 MB
