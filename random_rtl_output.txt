@@ -35,7 +35,7 @@ x29 176
 x30 0
 x31 679
 ==========================================
-- tb\tb_random.sv:76: Verilog $finish
+- tb\tb_random.sv:161: Verilog $finish
 - S i m u l a t i o n   R e p o r t: Verilator 5.050 2026-07-01
-- Verilator: $finish at 1ns; walltime 0.000 s; speed 0.000 s/s
+- Verilator: $finish at 1ns; walltime 0.008 s; speed 125.609 ns/s
 - Verilator: cpu 0.000 s on 1 threads; allocated 5 MB
